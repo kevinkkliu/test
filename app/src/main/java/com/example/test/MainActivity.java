@@ -82,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         cameraBridgeViewBase.setCvCameraViewListener(this);
 
 
-        Context context = getApplicationContext();
-        CharSequence text = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.cfg"; //驗證路徑
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+//        Context context = getApplicationContext();
+//        CharSequence text = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.cfg"; //驗證路徑
+//        int duration = Toast.LENGTH_SHORT;
+//
+//        Toast toast = Toast.makeText(context, text, duration);
+//        toast.show();
 
 //        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         baseLoaderCallback = new BaseLoaderCallback(this) {
