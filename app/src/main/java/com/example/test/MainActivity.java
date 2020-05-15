@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
             if (firstTimeYolo == false){
                 firstTimeYolo = true;
-                String tinyYoloCfg = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.cfg" ; //換成自己的神經
-                String tinyYoloWeights = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.weights"; //換成自己的神經
+                String tinyYoloCfg = "/storage/emulated/0/dnns/yolov3-tiny.cfg"; //換成自己的神經
+                String tinyYoloWeights =  "/storage/emulated/0/dnns/yolov3-tiny.weights"; //換成自己的神經
                 tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
             }
         }
@@ -204,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onCameraViewStarted(int width, int height) {
         if (startYolo == true){
 
-            String tinyYoloCfg = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.cfg" ; //換成自己的神經
-            String tinyYoloWeights = Environment.getExternalStorageDirectory() + "/dnns/yolov3-tiny.weights"; //換成自己的神經
+            String tinyYoloCfg = "/storage/emulated/0/dnns/yolov3-tiny.cfg"; //換成自己的神經
+            String tinyYoloWeights = "/storage/emulated/0/dnns/yolov3-tiny.weights"; //換成自己的神經
 
             tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
         }
