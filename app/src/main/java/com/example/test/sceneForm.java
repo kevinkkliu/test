@@ -18,7 +18,9 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
-public class sceneForm extends MainActivity{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class sceneForm extends AppCompatActivity {
     private static final String TAG = sceneForm.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
 
