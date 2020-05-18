@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     Imgproc.rectangle(frame, box.tl(), box.br(), new Scalar(255, 0, 0), 2);
 
                 }
+
             }
         }
         return frame;
@@ -208,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             String tinyYoloWeights = "/storage/emulated/0/dnns/yolov3-tiny.weights"; //換成自己的神經
 
             tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
+
+
         }
     }
 
