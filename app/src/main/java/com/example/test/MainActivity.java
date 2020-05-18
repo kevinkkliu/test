@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
 
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) { // 畫框
 
         Mat frame = inputFrame.rgba();
         if (startYolo == true) {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
                 Dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThresh, indices);
 
-                // 畫框
+
                 int[] ind = indices.toArray();
                 for (int i = 0; i < ind.length; ++i) {
 
