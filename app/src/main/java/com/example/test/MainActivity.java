@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void Button(View v){
         setContentView(R.layout.activity_ux);
     }
-
+    public void backtomain(View view){
+        setContentView(R.layout.activity_main);
+    }
 
     public void Click(View Button){
 
