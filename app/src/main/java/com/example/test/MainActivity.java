@@ -46,8 +46,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     BaseLoaderCallback baseLoaderCallback;
     boolean startYolo = false;
     boolean firstTimeYolo = false;
+    boolean layoutChg = false;
 
     Net tinyYolo;
+
+
+    public void Button(View v){
+        setContentView(R.layout.activity_ux);
+    }
 
 
     public void Click(View Button){
