@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
@@ -43,6 +44,9 @@ public class sceneForm extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_ux);
+        Button btnHome = (Button)findViewById(R.id.backtodetec);
+        btnHome.setOnClickListener(btnHomeListener);
+
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
         // When you build a Renderable, Sceneform loads its resources in the background while returning
@@ -81,6 +85,13 @@ public class sceneForm extends AppCompatActivity {
                     toast1.show();
                 });
     }
+
+    private Button.OnClickListener btnHomeListener = new Button.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run

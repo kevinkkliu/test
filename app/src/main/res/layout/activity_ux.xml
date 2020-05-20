@@ -13,22 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="sceneForm">
+
+  <Button
+      android:id="@+id/backtodetec"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="backtomain"
+      android:text="back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/ux_fragment"
+      app:layout_constraintVertical_bias="0.959" />
 
   <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
       android:id="@+id/ux_fragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 
-  <Button
-      android:id="@+id/button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:onClick="backtomain"
-      android:text="back" />
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.test;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -51,9 +53,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     Net tinyYolo;
 
 
-    public void Button(View v){
-        setContentView(R.layout.activity_ux);
-    }
+
     public void backtomain(View view){
         setContentView(R.layout.activity_main);
     }
@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
         cameraBridgeViewBase.setCvCameraViewListener(this);
+        Button btnPage2 = (Button)findViewById(R.id.btnPage2);
+        btnPage2.setOnClickListener(btnPage2Listener);
+
 
 
 //        Context context = getApplicationContext();
@@ -114,7 +117,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         };
     }
-
+    private Button.OnClickListener btnPage2Listener = new Button.OnClickListener(){
+        public void onClick(View v){
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,sceneForm.class);
+            startActivity(intent);
+        }
+    };
 
 
     @Override

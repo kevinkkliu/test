@@ -8,43 +8,39 @@
     >
 
 
-
     <org.opencv.android.JavaCameraView
+        android:id="@+id/CameraView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        android:id="@+id/CameraView"
 
-        />
+        tools:layout_editor_absoluteX="-32dp"
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
         android:onClick="Click"
         android:text="Click"
         app:layout_constraintBottom_toBottomOf="@+id/CameraView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.882"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnPage2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="84dp"
-        android:text="Button"
-        android:onClick="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="To Ar"
+        app:layout_constraintBottom_toBottomOf="@+id/CameraView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.251"
-        app:layout_constraintStart_toStartOf="@+id/CameraView"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.148"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/CameraView"
         app:layout_constraintVertical_bias="0.976" />
 
 
