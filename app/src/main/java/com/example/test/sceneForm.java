@@ -28,7 +28,7 @@ public class sceneForm extends AppCompatActivity {
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     private ArFragment arFragment;
-    private ModelRenderable andyRenderable;
+    public ModelRenderable andyRenderable;
 
 
 
@@ -60,20 +60,20 @@ public class sceneForm extends AppCompatActivity {
                     if (andyRenderable == null) {
                         return;
                     }
-
-                    // Create the Anchor.
                     Anchor anchor = hitResult.createAnchor();
-                    AnchorNode anchorNode = new AnchorNode(anchor);
-                    anchorNode.setParent(arFragment.getArSceneView().getScene());
-                    Toast toast = Toast.makeText(this, "create anchor", Toast.LENGTH_LONG);
-                    toast.show();
-                    // Create the transformable andy and add it to the anchor.
-                    TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
-                    andy.setParent(anchorNode);
-                    andy.setRenderable(andyRenderable);
-                    andy.select();
-                    Toast toast1 = Toast.makeText(this, "successful", Toast.LENGTH_LONG);
-                    toast1.show();
+//                    // Create the Anchor.
+//                    Anchor anchor = hitResult.createAnchor();
+//                    AnchorNode anchorNode = new AnchorNode(anchor);
+//                    anchorNode.setParent(arFragment.getArSceneView().getScene());
+//                    Toast toast = Toast.makeText(this, "create anchor", Toast.LENGTH_LONG);
+//                    toast.show();
+//                    // Create the transformable andy and add it to the anchor.
+//                    TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
+//                    andy.setParent(anchorNode);
+//                    andy.setRenderable(andyRenderable);
+//                    andy.select();
+//                    Toast toast1 = Toast.makeText(this, "successful", Toast.LENGTH_LONG);
+//                    toast1.show();
 
                     ModelRenderable.builder()
                             .setSource(this, Uri.parse("model.sfb"))
@@ -97,6 +97,7 @@ public class sceneForm extends AppCompatActivity {
         transformableNode.setRenderable(modelrenderable);
         arFragment.getArSceneView().getScene().addChild(anchorNode);
         transformableNode.select();
+
     }
 
     private Button.OnClickListener btnHomeListener = new Button.OnClickListener(){
