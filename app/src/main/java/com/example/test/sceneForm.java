@@ -3,6 +3,7 @@ package com.example.test;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,29 +44,19 @@ public class sceneForm extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_ux);
-        Button btnHome = (Button)findViewById(R.id.backtodetec);
-        btnHome.setOnClickListener(btnHomeListener);
+        setContentView(R.layout.activity_ux);//activity change
+        Button btnHome = (Button)findViewById(R.id.backtodetec);//activity change
+        btnHome.setOnClickListener(btnHomeListener);//activity change
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
-        ModelRenderable.builder()
-                .setSource(this, R.raw.model)
-                .build()
-                .thenAccept(renderable -> andyRenderable = renderable)
-                .exceptionally(
-                        throwable -> {
-                            Toast toast =
-                                    Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
-                            return null;
-                        });
+
 
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
+
                     if (andyRenderable == null) {
                         return;
                     }
@@ -83,7 +74,29 @@ public class sceneForm extends AppCompatActivity {
                     andy.select();
                     Toast toast1 = Toast.makeText(this, "successful", Toast.LENGTH_LONG);
                     toast1.show();
+
+                    ModelRenderable.builder()
+                            .setSource(this, Uri.parse("model.sfb"))
+                            .build()
+                            .thenAccept(modelrenderable -> addModelToScene(anchor,modelrenderable))
+                            .exceptionally(
+                                    throwable -> {
+                                        Toast toast3 =
+                                                Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
+                                        toast3.setGravity(Gravity.CENTER, 0, 0);
+                                        toast3.show();
+                                        return null;
+                                    });
                 });
+    }
+
+    private void addModelToScene(Anchor anchor, ModelRenderable modelrenderable) {
+        AnchorNode anchorNode= new AnchorNode(anchor);
+        TransformableNode transformableNode = new TransformableNode(arFragment.getTransformationSystem());
+        transformableNode.setParent(anchorNode);
+        transformableNode.setRenderable(modelrenderable);
+        arFragment.getArSceneView().getScene().addChild(anchorNode);
+        transformableNode.select();
     }
 
     private Button.OnClickListener btnHomeListener = new Button.OnClickListener(){
