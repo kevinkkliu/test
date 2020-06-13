@@ -1,3 +1,5 @@
+include ':arcore-location'
 include ':app'
 rootProject.name='test'
 include ':openCVLibrary345'
+project(':arcore-location').projectDir = new File(rootDir, 'ARCore-Location-1.2/arcore-location/')
