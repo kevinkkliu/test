@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
 
+import com.google.ar.core.Frame;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
@@ -16,7 +17,7 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.google.ar.sceneform.ArSceneView;
-
+import com.google.ar.sceneform.FrameTime;
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.LocationScene;
 import com.google.ar.core.Anchor;
@@ -30,6 +31,8 @@ public class LocationTest extends AppCompatActivity {
     public ModelRenderable andyRenderable;
     private ArFragment arFragment;
     public ArSceneView arSceneView;
+    public Frame frame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,27 +64,27 @@ public class LocationTest extends AppCompatActivity {
                         });
 
 
-                arSceneView
-                .getScene()
-                .setOnTouchListener(
-                        frameTime -> {
+                arSceneView.getScene().setOnTouchListener(
+                        (frameTime, event) -> {
 
-                            if (locationScene == null) {
-                                locationScene = new LocationScene(this, arSceneView);
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                -0.119677,
-                                                51.478494,
-                                                getAndy()));
-                            }
+                        if (locationScene == null) {
+                            locationScene = new LocationScene(this, arSceneView);
+                            locationScene.mLocationMarkers.add(
+                                    new LocationMarker(
+                                            -0.119677,
+                                            51.478494,
+                                            getAndy()));
+                        }
 
 
 
-                            if (locationScene != null) {
-                                locationScene.processFrame(frame);
-                            }
+                        if (locationScene != null) {
+                            locationScene.processFrame(frame);
+                        }
+                        return false;
+                    }
 
-                        });
+                );
     }
     private Node getAndy() {
         Node base = new Node();
