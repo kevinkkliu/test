@@ -40,6 +40,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation "com.google.android.material:material:1.1.0-alpha06"
     implementation 'de.javagl:obj:0.2.1'
     implementation 'com.github.appoly:ARCore-Location:1.2'
     testImplementation 'junit:junit:4.12'
@@ -47,4 +49,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
     implementation project(path: ':openCVLibrary345')
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    maven { url 'https://jitpack.io' }
 }

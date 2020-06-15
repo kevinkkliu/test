@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private Button.OnClickListener btnPage2Listener = new Button.OnClickListener(){
         public void onClick(View v){
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,sceneForm.class);
+            intent.setClass(MainActivity.this,LocationTest.class);
             startActivity(intent);
         }
     };

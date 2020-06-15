@@ -20,7 +20,15 @@ allprojects {
         google()
         jcenter()
         mavenLocal()
+        maven {
+            url "${project.rootDir}/../../libraries/m2repository"
+        }
+
         maven { url 'https://jitpack.io' }
+
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
