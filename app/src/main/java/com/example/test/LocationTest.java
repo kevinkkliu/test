@@ -16,53 +16,53 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.filament.Renderer;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.ar.core.Anchor;
 
+import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.common.TransformProvider;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
-import com.google.android.filament.Renderer;
+import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.FrameTime;
+import com.google.ar.core.HitResult;
+import com.google.ar.core.Plane;
+import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.ux.TransformationSystem;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.FrameTime;
+
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.LocationScene;
 import uk.co.appoly.arcorelocation.rendering.LocationNode;
 import uk.co.appoly.arcorelocation.rendering.LocationNodeRender;
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
 
-import com.google.ar.core.Anchor;
-import com.google.ar.core.HitResult;
-import com.google.ar.core.Plane;
-import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.core.HitResult;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 public class LocationTest extends AppCompatActivity {
     private boolean installRequested;
     private boolean hasFinishedLoading = false;
 
     private Snackbar loadingMessageSnackbar = null;
-
+    private ArFragment arFragment;
     private ArSceneView arSceneView;
+    private HitResult hitResult;
 
     // Renderables for this example
-    private ModelRenderable andyRenderable;
+    private ModelRenderable arrowRenderable;
     private ViewRenderable exampleLayoutRenderable;
 
-    // Our ARCore-Location scene
+    // ARCore-Location scene
     private LocationScene locationScene;
 
 
@@ -72,32 +72,37 @@ public class LocationTest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ux);
+
         Button btnHome = (Button)findViewById(R.id.backtodetec);//activity change
         btnHome.setOnClickListener(btnHomeListener);//activity change
 
+
+
         arSceneView = findViewById(R.id.ux_fragment);
 
-        // Build a renderable from a 2D View.
+        // 目的地render
         CompletableFuture<ViewRenderable> exampleLayout =
                 ViewRenderable.builder()
                         .setView(this, R.layout.activity_ux)
                         .build();
 
-        // When you build a Renderable, Sceneform loads its resources in the background while returning
-        // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
-        CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
+        //箭頭render
+        CompletableFuture<ModelRenderable> arrow = ModelRenderable.builder()
                 .setSource(this, R.raw.model)
-                .build();
+                .build()
+                .exceptionally(
+                        throwable -> {
+                            Toast toast =
+                                    Toast.makeText(this, "Unable to load renderable "
+                                            , Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            return null;
+                        });
 
-
-        CompletableFuture.allOf(
-                exampleLayout,
-                andy)
+        CompletableFuture.allOf(exampleLayout,arrow)
                 .handle(
                         (notUsed, throwable) -> {
-                            // When you build a Renderable, Sceneform loads its resources in the background while
-                            // returning a CompletableFuture. Call handle(), thenAccept(), or check isDone()
-                            // before calling get().
 
                             if (throwable != null) {
                                 DemoUtils.displayError(this, "Unable to load renderables", throwable);
@@ -106,7 +111,7 @@ public class LocationTest extends AppCompatActivity {
 
                             try {
 //                                exampleLayoutRenderable = exampleLayout.get();
-                                andyRenderable = andy.get();
+                                arrowRenderable = arrow.get();
                                 hasFinishedLoading = true;
 
                             } catch (InterruptedException | ExecutionException ex) {
@@ -116,8 +121,7 @@ public class LocationTest extends AppCompatActivity {
                             return null;
                         });
 
-        // Set an update listener on the Scene that will hide the loading message once a Plane is
-        // detected.
+
         arSceneView
                 .getScene()
                 .addOnUpdateListener(
@@ -131,9 +135,8 @@ public class LocationTest extends AppCompatActivity {
                                 // We know that here, the AR components have been initiated.
                                 locationScene = new LocationScene(this, arSceneView);
 
-                                // Now lets create our location markers.
-                                // First, a layout
-//                                LocationMarker layoutLocationMarker = new LocationMarker(
+                                //目的地標點
+                                // LocationMarker layoutLocationMarker = new LocationMarker(
 //                                        -4.849509,
 //                                        42.814603,
 //                                        getExampleView()
@@ -155,9 +158,9 @@ public class LocationTest extends AppCompatActivity {
                                 // Adding a simple location marker of a 3D model
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
-                                                -0.119677,
-                                                51.478494,
-                                                getAndy()));
+                                                0                                   ,
+                                                150,
+                                                 getAndy()));
                             }
 
                             Frame frame = arSceneView.getArFrame();
@@ -194,6 +197,7 @@ public class LocationTest extends AppCompatActivity {
      */
     private Node getExampleView() {
         Node base = new Node();
+
         base.setRenderable(exampleLayoutRenderable);
         Context c = this;
         // Add  listeners etc here
@@ -214,15 +218,12 @@ public class LocationTest extends AppCompatActivity {
      * @return
      */
     private Node getAndy() {
+
         Node base = new Node();
-        base.setRenderable(andyRenderable);
-        Context c = this;
-        base.setOnTapListener((v, event) -> {
-            Toast.makeText(
-                    c, "Andy touched.", Toast.LENGTH_LONG)
-                    .show();
-        });
+        base.setRenderable(arrowRenderable);
+
         return base;
+
     }
 
     /***

@@ -36,7 +36,8 @@
     collision: {},
     file: 'sampledata/model.obj',
     name: 'model',
-    recenter: 'root',
+    scale: 0.1,
+    recenter: "root",
   },
   version: '0.54:2',
 }
