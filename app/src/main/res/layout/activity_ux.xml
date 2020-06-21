@@ -36,7 +36,7 @@
       android:id="@+id/ux_fragment"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:layout_gravity="top"/>
+      android:layout_gravity="top" />
 
   <TextView
       android:id="@+id/textView2"

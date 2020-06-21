@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.filament.Renderer;
@@ -83,8 +84,9 @@ public class LocationTest extends AppCompatActivity {
         // 目的地render
         CompletableFuture<ViewRenderable> exampleLayout =
                 ViewRenderable.builder()
-                        .setView(this, R.layout.activity_ux)
+                        .setView(this, R.layout.test_view)
                         .build();
+
 
         //箭頭render
         CompletableFuture<ModelRenderable> arrow = ModelRenderable.builder()
@@ -110,7 +112,7 @@ public class LocationTest extends AppCompatActivity {
                             }
 
                             try {
-//                                exampleLayoutRenderable = exampleLayout.get();
+                                exampleLayoutRenderable = exampleLayout.get();
                                 arrowRenderable = arrow.get();
                                 hasFinishedLoading = true;
 
@@ -121,7 +123,24 @@ public class LocationTest extends AppCompatActivity {
                             return null;
                         });
 
-
+//        arFragment.setOnTapArPlaneListener(//監聽啦
+//                (HitResult hitResult, Plane plane, MotionEvent motionEvent)->{
+//
+//                    Anchor anchor = hitResult.createAnchor();
+//                    AnchorNode anchorNode = new AnchorNode(anchor);
+//                    anchorNode.setParent(arFragment.getArSceneView().getScene());
+//
+//                    TransformableNode node = new TransformableNode(arFragment.getTransformationSystem());
+//                    node.setParent(anchorNode);
+//
+//                    node.setRenderable(exampleLayoutRenderable);
+//
+//
+//                    node.select();
+//
+//
+//
+//                });
         arSceneView
                 .getScene()
                 .addOnUpdateListener(
@@ -136,24 +155,24 @@ public class LocationTest extends AppCompatActivity {
                                 locationScene = new LocationScene(this, arSceneView);
 
                                 //目的地標點
-                                // LocationMarker layoutLocationMarker = new LocationMarker(
-//                                        -4.849509,
-//                                        42.814603,
-//                                        getExampleView()
-//                                );
+                                 LocationMarker layoutLocationMarker = new LocationMarker(
+                                        0,
+                                        150,
+                                        getExampleView()
+                                );
 
                                 // An example "onRender" event, called every frame
                                 // Updates the layout with the markers distance
-//                                layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
-//                                    @Override
-//                                    public void render(LocationNode node) {
-//                                        View eView = exampleLayoutRenderable.getView();
-//                                        TextView distanceTextView = eView.findViewById(R.id.textView2);
-//                                        distanceTextView.setText(node.getDistance() + "M");
-//                                    }
-//                                });
+                                layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
+                                    @Override
+                                    public void render(LocationNode node) {
+                                        View eView = exampleLayoutRenderable.getView();
+                                        TextView distanceImgView = eView.findViewById(R.id.image_view);
+                                        distanceImgView.setText(node.getDistance()+"M");
+                                    }
+                                });
                                 // Adding the marker
-//                                locationScene.mLocationMarkers.add(layoutLocationMarker);
+                                locationScene.mLocationMarkers.add(layoutLocationMarker);
 
                                 // Adding a simple location marker of a 3D model
                                 locationScene.mLocationMarkers.add(
@@ -204,7 +223,7 @@ public class LocationTest extends AppCompatActivity {
         View eView = exampleLayoutRenderable.getView();
         eView.setOnTouchListener((v, event) -> {
             Toast.makeText(
-                    c, "Location marker touched.", Toast.LENGTH_LONG)
+                    c, "這應該是你想去的地方吧", Toast.LENGTH_LONG)
                     .show();
             return false;
         });

@@ -1,16 +1,16 @@
 {
   materials: [
     {
-      name: 'mat5',
+      name: 'mat21',
       parameters: [
         {
           baseColor: null,
         },
         {
           baseColorTint: [
-            0.01,
-            0.60999999999999999,
-            0.90000000000000002,
+            1,
+            1,
+            1,
             1,
           ],
         },
@@ -36,8 +36,7 @@
     collision: {},
     file: 'sampledata/model.obj',
     name: 'model',
-    scale: 0.1,
-    recenter: "root",
+    recenter: false ,
   },
   version: '0.54:2',
 }

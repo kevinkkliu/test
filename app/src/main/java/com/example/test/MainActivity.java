@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,6 +21,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.*;
 import org.opencv.core.MatOfFloat;
@@ -35,6 +37,7 @@ import org.opencv.dnn.Dnn;
 import org.opencv.imgproc.Imgproc;
 
 import org.opencv.utils.Converters;
+import org.opencv.videoio.VideoCapture;
 
 
 import java.util.ArrayList;
@@ -44,6 +47,13 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
+    TextView txt1;
+    TextView txt2;
+    int mFPS;
+    long startTime = 0;
+    long currentTime = 1000;
+    Mat mat1;
+
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
     boolean startYolo = false;
@@ -51,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     boolean layoutChg = false;
 
     Net tinyYolo;
-
+//    int idGuy;
+    int counter = 0 ;
 
 
     public void backtomain(View view){
@@ -68,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 String tinyYoloCfg = "/storage/emulated/0/dnns/yolov3-tiny.cfg"; //換成自己的神經
                 String tinyYoloWeights =  "/storage/emulated/0/dnns/yolov3-tiny_20000.weights"; //換成自己的神經
                 tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
+
             }
         }
 
@@ -85,12 +97,20 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
         cameraBridgeViewBase.setCvCameraViewListener(this);
         Button btnPage2 = (Button)findViewById(R.id.btnPage2);
         btnPage2.setOnClickListener(btnPage2Listener);
 
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                txt1 = (TextView) findViewById(R.id.txt1);
+            }
+        });
 
 
 //        Context context = getApplicationContext();
@@ -126,10 +146,29 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     };
 
 
+
+
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) { // 畫框
 
         Mat frame = inputFrame.rgba();
+
+        //Log.i(TAG, mat1.get(128, 128).toString());
+
+        runOnUiThread(new Runnable() { //fps
+            @Override
+            public void run() {
+                if (currentTime - startTime >= 1000) {
+                    txt1.setText("FPS: " + String.valueOf(mFPS));
+                    mFPS = 0;
+                    startTime = System.currentTimeMillis();
+                }
+                currentTime = System.currentTimeMillis();
+                mFPS += 1;
+
+            }
+        });
+
         if (startYolo == true) {
             Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2RGB);
             Mat imageBlob = Dnn.blobFromImage(frame, 0.00392, new Size(416,416),new Scalar(0, 0, 0),/*swapRB*/false, /*crop*/false);
@@ -141,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             outBlobNames.add(1, "yolo_23");
             tinyYolo.forward(result,outBlobNames);
 
-            float confThreshold = 0.3f;
+            float confThreshold = 0.7f;
 
             List<Integer> clsIds = new ArrayList<>();
             List<Float> confs = new ArrayList<>();
@@ -159,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     float confidence = (float)mm.maxVal;
                     Point classIdPoint = mm.maxLoc;
 
-                    if (confidence > confThreshold)
+                    if (confidence > confThreshold)//conf準確率大於 70%才進行畫框的動作 confidence 191
                     {
                         int centerX = (int)(row.get(0,0)[0] * frame.cols());
                         int centerY = (int)(row.get(0,1)[0] * frame.rows());
@@ -242,12 +281,20 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
                     int intConf = (int) (conf * 100);
 
-                    Imgproc.putText(frame,cocoNames.get(idGuy) + " " + intConf + "%",box.tl(),Core.FONT_HERSHEY_SIMPLEX, 2, new Scalar(255,255,0),2);
+                    Imgproc.putText(frame,cocoNames.get(idGuy) + " " + intConf + "%",box.tl(),Core.FONT_HERSHEY_SIMPLEX, 1, new Scalar(0,255,0),1);
 
                     Imgproc.rectangle(frame, box.tl(), box.br(), new Scalar(255, 0, 0), 2);
 
-                }
+                    counter++;
 
+                    if (idGuy==idGuy){
+                        TextView view = (TextView)findViewById(R.id.txt2);
+                        view.setText("已辨識出:"+cocoNames.get(idGuy));
+                        if (counter > 5){
+                            view.setText("請問這裡是M3嗎");
+                        }
+                    }
+                }
             }
         }
         return frame;
@@ -255,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     @Override
     public void onCameraViewStarted(int width, int height) {
+        mat1 = new Mat(width, height, CvType.CV_8UC4);
+
         if (startYolo == true){
 
             String tinyYoloCfg = "/storage/emulated/0/dnns/yolov3-tiny.cfg"; //換成自己的神經
@@ -268,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     @Override
     public void onCameraViewStopped() {
-
+        mat1.release();
     }
 
     @Override
