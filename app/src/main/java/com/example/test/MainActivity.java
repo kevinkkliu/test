@@ -1,5 +1,6 @@
 package com.example.test;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -11,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,10 +83,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
 
             }
+
         }
 
         else{
             startYolo = false;
+
         }
     }
 
@@ -139,12 +143,46 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
     private Button.OnClickListener btnPage2Listener = new Button.OnClickListener(){
         public void onClick(View v){
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this,LocationTest.class);
-            startActivity(intent);
+            detectCheck();
+
         }
     };
 
+
+    private void detectCheck(){
+
+        AlertDialog.Builder checkbox = new AlertDialog.Builder(this);
+        checkbox.setTitle("確認");
+        checkbox.setMessage("這裡是M3嗎?");
+
+        checkbox.setPositiveButton("開始導航",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                destinationBox();
+            }
+        });
+        checkbox.setNegativeButton("繼續辨識", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        checkbox.show();
+    }
+
+    public void destinationBox(){
+        final EditText editText= new EditText(this);
+        new AlertDialog.Builder(this).setTitle("你想要去哪裡")
+            .setView(editText)
+            .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this,LocationTest.class);
+                    startActivity(intent);
+                }
+            }).setNegativeButton("取消",null).show();
+    }
 
 
 
@@ -180,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             outBlobNames.add(1, "yolo_23");
             tinyYolo.forward(result,outBlobNames);
 
-            float confThreshold = 0.7f;
+            float confThreshold = 0.98f;
 
             List<Integer> clsIds = new ArrayList<>();
             List<Float> confs = new ArrayList<>();
@@ -285,20 +323,32 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
                     Imgproc.rectangle(frame, box.tl(), box.br(), new Scalar(255, 0, 0), 2);
 
-                    counter++;
+                    TextView view = (TextView)findViewById(R.id.txt2);
+                    view.setText("已辨識出:"+cocoNames.get(idGuy));
 
-                    if (idGuy==idGuy){
-                        TextView view = (TextView)findViewById(R.id.txt2);
-                        view.setText("已辨識出:"+cocoNames.get(idGuy));
-                        if (counter > 5){
-                            view.setText("請問這裡是M3嗎");
+                    if (intConf>98){
+                        counter++;
+                        if (counter > 50) {
+                            startYolo= false;
+                            mat1.release();
+                            view.setText("辨識完成！");
+                            counter=0;
+                            break;
+
                         }
+
                     }
+
                 }
+
             }
+
         }
+
         return frame;
     }
+
+
 
     @Override
     public void onCameraViewStarted(int width, int height) {
@@ -311,12 +361,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
             tinyYolo = Dnn.readNetFromDarknet(tinyYoloCfg, tinyYoloWeights);
 
-
         }
     }
 
     @Override
     public void onCameraViewStopped() {
+
         mat1.release();
     }
 
