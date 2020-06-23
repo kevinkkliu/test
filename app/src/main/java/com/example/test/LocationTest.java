@@ -61,7 +61,7 @@ public class LocationTest extends AppCompatActivity {
 
     // Renderables for this example
     private ModelRenderable arrowRenderable;
-    private ViewRenderable exampleLayoutRenderable;
+    private ViewRenderable distanceLayoutRenderable;
 
     // ARCore-Location scene
     private LocationScene locationScene;
@@ -97,7 +97,7 @@ public class LocationTest extends AppCompatActivity {
                             Toast toast =
                                     Toast.makeText(this, "Unable to load renderable "
                                             , Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
                             toast.show();
                             return null;
                         });
@@ -112,7 +112,7 @@ public class LocationTest extends AppCompatActivity {
                             }
 
                             try {
-                                exampleLayoutRenderable = exampleLayout.get();
+                                distanceLayoutRenderable = exampleLayout.get();
                                 arrowRenderable = arrow.get();
                                 hasFinishedLoading = true;
 
@@ -133,7 +133,7 @@ public class LocationTest extends AppCompatActivity {
 //                    TransformableNode node = new TransformableNode(arFragment.getTransformationSystem());
 //                    node.setParent(anchorNode);
 //
-//                    node.setRenderable(exampleLayoutRenderable);
+//                    node.setRenderable(distanceLayoutRenderable);
 //
 //
 //                    node.select();
@@ -158,7 +158,7 @@ public class LocationTest extends AppCompatActivity {
                                  LocationMarker layoutLocationMarker = new LocationMarker(
                                         0,
                                         150,
-                                        getExampleView()
+                                        getDistanceView()
                                 );
 
                                 // An example "onRender" event, called every frame
@@ -166,9 +166,9 @@ public class LocationTest extends AppCompatActivity {
                                 layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
                                     @Override
                                     public void render(LocationNode node) {
-                                        View eView = exampleLayoutRenderable.getView();
+                                        View eView = distanceLayoutRenderable.getView();
                                         TextView distanceImgView = eView.findViewById(R.id.image_view);
-                                        distanceImgView.setText(node.getDistance()+"M");
+                                        distanceImgView.setText(String.format("%.4f",node.getDistanceInAR())+"M");
                                     }
                                 });
                                 // Adding the marker
@@ -214,13 +214,13 @@ public class LocationTest extends AppCompatActivity {
      *
      * @return
      */
-    private Node getExampleView() {
+    private Node getDistanceView() {
         Node base = new Node();
 
-        base.setRenderable(exampleLayoutRenderable);
+        base.setRenderable(distanceLayoutRenderable);
         Context c = this;
         // Add  listeners etc here
-        View eView = exampleLayoutRenderable.getView();
+        View eView = distanceLayoutRenderable.getView();
         eView.setOnTouchListener((v, event) -> {
             Toast.makeText(
                     c, "這應該是你想去的地方吧", Toast.LENGTH_LONG)
