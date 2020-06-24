@@ -9,6 +9,8 @@ import android.opengl.GLES30;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,7 +39,6 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
-import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
 
 import java.util.concurrent.CompletableFuture;
@@ -157,18 +158,21 @@ public class LocationTest extends AppCompatActivity {
                                 //目的地標點
                                  LocationMarker layoutLocationMarker = new LocationMarker(
                                         0,
-                                        150,
+                                        130,
                                         getDistanceView()
                                 );
 
                                 // An example "onRender" event, called every frame
                                 // Updates the layout with the markers distance
+
                                 layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
                                     @Override
                                     public void render(LocationNode node) {
                                         View eView = distanceLayoutRenderable.getView();
                                         TextView distanceImgView = eView.findViewById(R.id.image_view);
-                                        distanceImgView.setText(String.format("%.4f",node.getDistanceInAR())+"M");
+                                        node.scaleAndRotate();
+                                        distanceImgView.setText(String.format("%.1f",node.getDistanceInAR())+"M");
+
                                     }
                                 });
                                 // Adding the marker
@@ -178,8 +182,8 @@ public class LocationTest extends AppCompatActivity {
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
                                                 0                                   ,
-                                                150,
-                                                 getAndy()));
+                                                130,
+                                                 getLobby()));
                             }
 
                             Frame frame = arSceneView.getArFrame();
@@ -214,10 +218,15 @@ public class LocationTest extends AppCompatActivity {
      *
      * @return
      */
+
+
     private Node getDistanceView() {
+
+
         Node base = new Node();
 
         base.setRenderable(distanceLayoutRenderable);
+
         Context c = this;
         // Add  listeners etc here
         View eView = distanceLayoutRenderable.getView();
@@ -236,9 +245,10 @@ public class LocationTest extends AppCompatActivity {
      *
      * @return
      */
-    private Node getAndy() {
+    private Node getLobby() {//大廳節點
 
         Node base = new Node();
+
         base.setRenderable(arrowRenderable);
 
         return base;
